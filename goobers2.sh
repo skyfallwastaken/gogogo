@@ -47,4 +47,4 @@ export -f reindex_one
 export DB MWM MEM
 
 # Run in batches of $BATCH using GNU parallel or xargs
-printf '%s\n' "${INDEXES[@]}" | xargs -P "$BATCH" -I{} bash -c 'reindex_one "$@"' _ {}
+printf '%s\n' "${INDEXES[@]}" | xargs -P 4 -I{} bash -c 'reindex_one "$@"' _ {}

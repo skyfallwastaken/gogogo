@@ -363,9 +363,9 @@
       <p class="games-subheader">Kill some time with these mini-games.</p>
 
       <div class="game-tabs">
-        <button class="game-tab active" onclick="switchGame('snake')">Snake</button>
-        <button class="game-tab" onclick="switchGame('ttt')">Tic-Tac-Toe</button>
-        <button class="game-tab" onclick="switchGame('memory')">Memory</button>
+        <button class="game-tab active" onclick="switchGame('snake', this)">Snake</button>
+        <button class="game-tab" onclick="switchGame('ttt', this)">Tic-Tac-Toe</button>
+        <button class="game-tab" onclick="switchGame('memory', this)">Memory</button>
       </div>
 
       <div class="game-container">
@@ -395,11 +395,11 @@
 
     <script>
       // --- Game Tab Switching ---
-      function switchGame(game) {
+      function switchGame(game, tab) {
         document.querySelectorAll('.game-panel').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.game-tab').forEach(t => t.classList.remove('active'));
         document.getElementById('game-' + game).classList.add('active');
-        event.target.classList.add('active');
+        tab.classList.add('active');
       }
 
       // ========== SNAKE ==========
@@ -459,6 +459,7 @@
       function drawSnake() {
         snakeCtx.fillStyle = '#121212';
         snakeCtx.fillRect(0, 0, snakeCanvas.width, snakeCanvas.height);
+        if (!snake?.length || !food) return;
         // food
         snakeCtx.fillStyle = '#f87171';
         snakeCtx.beginPath();

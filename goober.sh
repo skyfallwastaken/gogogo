@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DB="mydb"
+DB="postgres"
 TABLE="heartbeats"
 MWM=4        # parallel workers per index build
 MEM="6GB"    # maintenance_work_mem per session (4 parallel * 6GB = 24GB per batch)

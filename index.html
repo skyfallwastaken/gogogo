@@ -137,6 +137,167 @@
         max-width: 500px;
       }
 
+      /* Games Section */
+      .games-section {
+        padding: 60px 5%;
+        max-width: 1400px;
+        margin: 0 auto;
+        border-top: 1px solid #27272a;
+      }
+
+      .games-header {
+        font-family: "Spline Sans", sans-serif;
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+
+      .games-subheader {
+        color: var(--text-muted);
+        font-size: 16px;
+        margin-bottom: 32px;
+      }
+
+      .game-tabs {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 24px;
+      }
+
+      .game-tab {
+        background: #1a1a1a;
+        color: var(--nav-link);
+        border: 1px solid #27272a;
+        padding: 10px 20px;
+        border-radius: 20px;
+        font-family: "Spline Sans", sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .game-tab:hover {
+        background: #222;
+      }
+
+      .game-tab.active {
+        background: var(--accent);
+        color: black;
+        border-color: var(--accent);
+      }
+
+      .game-container {
+        background: #1a1a1a;
+        border: 1px solid #27272a;
+        border-radius: 16px;
+        padding: 32px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 400px;
+      }
+
+      .game-panel { display: none; width: 100%; align-items: center; flex-direction: column; }
+      .game-panel.active { display: flex; }
+
+      .game-score {
+        font-size: 14px;
+        color: var(--text-muted);
+        margin-bottom: 16px;
+      }
+
+      /* Snake */
+      #snake-canvas {
+        border: 2px solid #27272a;
+        border-radius: 8px;
+        background: #121212;
+      }
+
+      .game-btn {
+        background: var(--accent);
+        color: black;
+        border: none;
+        padding: 10px 24px;
+        border-radius: 20px;
+        font-family: "Spline Sans", sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 16px;
+        transition: opacity 0.2s;
+      }
+
+      .game-btn:hover { opacity: 0.85; }
+
+      .game-instructions {
+        color: var(--text-muted);
+        font-size: 13px;
+        margin-top: 12px;
+      }
+
+      /* Tic Tac Toe */
+      .ttt-board {
+        display: grid;
+        grid-template-columns: repeat(3, 100px);
+        grid-template-rows: repeat(3, 100px);
+        gap: 4px;
+      }
+
+      .ttt-cell {
+        background: #121212;
+        border: 2px solid #27272a;
+        border-radius: 8px;
+        font-size: 36px;
+        font-weight: 700;
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.15s;
+        font-family: "Spline Sans", sans-serif;
+      }
+
+      .ttt-cell:hover { background: #1e1e1e; }
+      .ttt-cell.x { color: #60a5fa; }
+      .ttt-cell.o { color: #f87171; }
+
+      .ttt-status {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 16px;
+        min-height: 28px;
+      }
+
+      /* Memory Game */
+      .memory-board {
+        display: grid;
+        grid-template-columns: repeat(4, 80px);
+        grid-template-rows: repeat(4, 80px);
+        gap: 8px;
+      }
+
+      .memory-card {
+        background: #121212;
+        border: 2px solid #27272a;
+        border-radius: 8px;
+        font-size: 32px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.25s;
+        user-select: none;
+      }
+
+      .memory-card:hover { background: #1e1e1e; }
+      .memory-card.flipped, .memory-card.matched {
+        background: #1e1e1e;
+        border-color: #3f3f46;
+      }
+      .memory-card.matched { border-color: #4ade80; opacity: 0.7; }
+
       @media (max-width: 768px) {
         .nav-links,
         .top-bar {
@@ -148,6 +309,19 @@
         h1 {
           font-size: 3.5rem;
         }
+        .game-tabs {
+          flex-wrap: wrap;
+        }
+        .ttt-board {
+          grid-template-columns: repeat(3, 80px);
+          grid-template-rows: repeat(3, 80px);
+        }
+        .memory-board {
+          grid-template-columns: repeat(4, 65px);
+          grid-template-rows: repeat(4, 65px);
+          gap: 6px;
+        }
+        .memory-card { font-size: 24px; }
       }
     </style>
   </head>
@@ -183,5 +357,276 @@
         </p>
       </div>
     </section>
+
+    <section class="games-section">
+      <div class="games-header">While you wait...</div>
+      <p class="games-subheader">Kill some time with these mini-games.</p>
+
+      <div class="game-tabs">
+        <button class="game-tab active" onclick="switchGame('snake')">Snake</button>
+        <button class="game-tab" onclick="switchGame('ttt')">Tic-Tac-Toe</button>
+        <button class="game-tab" onclick="switchGame('memory')">Memory</button>
+      </div>
+
+      <div class="game-container">
+        <!-- Snake -->
+        <div id="game-snake" class="game-panel active">
+          <div class="game-score" id="snake-score">Score: 0</div>
+          <canvas id="snake-canvas" width="400" height="400"></canvas>
+          <button class="game-btn" onclick="startSnake()">Start Game</button>
+          <div class="game-instructions">Arrow keys or WASD to move</div>
+        </div>
+
+        <!-- Tic Tac Toe -->
+        <div id="game-ttt" class="game-panel">
+          <div class="ttt-status" id="ttt-status">Your turn (X)</div>
+          <div class="ttt-board" id="ttt-board"></div>
+          <button class="game-btn" onclick="resetTTT()">New Game</button>
+        </div>
+
+        <!-- Memory -->
+        <div id="game-memory" class="game-panel">
+          <div class="game-score" id="memory-score">Moves: 0</div>
+          <div class="memory-board" id="memory-board"></div>
+          <button class="game-btn" onclick="resetMemory()">New Game</button>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      // --- Game Tab Switching ---
+      function switchGame(game) {
+        document.querySelectorAll('.game-panel').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.game-tab').forEach(t => t.classList.remove('active'));
+        document.getElementById('game-' + game).classList.add('active');
+        event.target.classList.add('active');
+      }
+
+      // ========== SNAKE ==========
+      const snakeCanvas = document.getElementById('snake-canvas');
+      const snakeCtx = snakeCanvas.getContext('2d');
+      const GRID = 20;
+      const TILE = snakeCanvas.width / GRID;
+      let snake, food, dir, snakeScore, snakeInterval, snakeRunning = false;
+
+      function startSnake() {
+        snake = [{x: 10, y: 10}];
+        dir = {x: 1, y: 0};
+        snakeScore = 0;
+        placeFood();
+        document.getElementById('snake-score').textContent = 'Score: 0';
+        if (snakeInterval) clearInterval(snakeInterval);
+        snakeRunning = true;
+        snakeInterval = setInterval(updateSnake, 120);
+      }
+
+      function placeFood() {
+        food = {
+          x: Math.floor(Math.random() * GRID),
+          y: Math.floor(Math.random() * GRID)
+        };
+      }
+
+      function updateSnake() {
+        const head = {x: snake[0].x + dir.x, y: snake[0].y + dir.y};
+        if (head.x < 0 || head.x >= GRID || head.y < 0 || head.y >= GRID ||
+            snake.some(s => s.x === head.x && s.y === head.y)) {
+          clearInterval(snakeInterval);
+          snakeRunning = false;
+          drawSnake();
+          snakeCtx.fillStyle = 'rgba(0,0,0,0.6)';
+          snakeCtx.fillRect(0, 0, snakeCanvas.width, snakeCanvas.height);
+          snakeCtx.fillStyle = '#fff';
+          snakeCtx.font = '600 28px Spline Sans, sans-serif';
+          snakeCtx.textAlign = 'center';
+          snakeCtx.fillText('Game Over!', snakeCanvas.width/2, snakeCanvas.height/2);
+          snakeCtx.font = '16px Spline Sans, sans-serif';
+          snakeCtx.fillStyle = '#a1a1aa';
+          snakeCtx.fillText('Score: ' + snakeScore, snakeCanvas.width/2, snakeCanvas.height/2 + 30);
+          return;
+        }
+        snake.unshift(head);
+        if (head.x === food.x && head.y === food.y) {
+          snakeScore++;
+          document.getElementById('snake-score').textContent = 'Score: ' + snakeScore;
+          placeFood();
+        } else {
+          snake.pop();
+        }
+        drawSnake();
+      }
+
+      function drawSnake() {
+        snakeCtx.fillStyle = '#121212';
+        snakeCtx.fillRect(0, 0, snakeCanvas.width, snakeCanvas.height);
+        // food
+        snakeCtx.fillStyle = '#f87171';
+        snakeCtx.beginPath();
+        snakeCtx.arc(food.x * TILE + TILE/2, food.y * TILE + TILE/2, TILE/2 - 2, 0, Math.PI * 2);
+        snakeCtx.fill();
+        // snake
+        snake.forEach((s, i) => {
+          snakeCtx.fillStyle = i === 0 ? '#fff' : '#a1a1aa';
+          snakeCtx.fillRect(s.x * TILE + 1, s.y * TILE + 1, TILE - 2, TILE - 2);
+        });
+      }
+
+      document.addEventListener('keydown', e => {
+        if (!snakeRunning) return;
+        const keyMap = {
+          ArrowUp: {x:0,y:-1}, w: {x:0,y:-1}, W: {x:0,y:-1},
+          ArrowDown: {x:0,y:1}, s: {x:0,y:1}, S: {x:0,y:1},
+          ArrowLeft: {x:-1,y:0}, a: {x:-1,y:0}, A: {x:-1,y:0},
+          ArrowRight: {x:1,y:0}, d: {x:1,y:0}, D: {x:1,y:0},
+        };
+        const newDir = keyMap[e.key];
+        if (newDir && !(newDir.x === -dir.x && newDir.y === -dir.y)) {
+          dir = newDir;
+          e.preventDefault();
+        }
+      });
+
+      // draw initial empty canvas
+      drawSnake();
+
+      // ========== TIC TAC TOE ==========
+      let tttBoard, tttTurn, tttOver;
+
+      function resetTTT() {
+        tttBoard = Array(9).fill('');
+        tttTurn = 'X';
+        tttOver = false;
+        document.getElementById('ttt-status').textContent = 'Your turn (X)';
+        renderTTT();
+      }
+
+      function renderTTT() {
+        const board = document.getElementById('ttt-board');
+        board.innerHTML = '';
+        tttBoard.forEach((val, i) => {
+          const cell = document.createElement('div');
+          cell.className = 'ttt-cell' + (val === 'X' ? ' x' : val === 'O' ? ' o' : '');
+          cell.textContent = val;
+          cell.onclick = () => playTTT(i);
+          board.appendChild(cell);
+        });
+      }
+
+      function playTTT(i) {
+        if (tttBoard[i] || tttOver) return;
+        tttBoard[i] = tttTurn;
+        const winner = checkTTTWinner();
+        if (winner) {
+          tttOver = true;
+          document.getElementById('ttt-status').textContent = winner + ' wins!';
+        } else if (tttBoard.every(c => c)) {
+          tttOver = true;
+          document.getElementById('ttt-status').textContent = "It's a draw!";
+        } else {
+          tttTurn = tttTurn === 'X' ? 'O' : 'X';
+          document.getElementById('ttt-status').textContent =
+            tttTurn === 'X' ? 'Your turn (X)' : "AI thinking...";
+          if (tttTurn === 'O') setTimeout(aiMoveTTT, 300);
+        }
+        renderTTT();
+      }
+
+      function aiMoveTTT() {
+        const lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+        // try to win
+        for (const l of lines) {
+          const vals = l.map(i => tttBoard[i]);
+          if (vals.filter(v => v==='O').length === 2 && vals.includes('')) {
+            playTTT(l[vals.indexOf('')]);
+            return;
+          }
+        }
+        // try to block
+        for (const l of lines) {
+          const vals = l.map(i => tttBoard[i]);
+          if (vals.filter(v => v==='X').length === 2 && vals.includes('')) {
+            playTTT(l[vals.indexOf('')]);
+            return;
+          }
+        }
+        // center, then random
+        if (!tttBoard[4]) { playTTT(4); return; }
+        const empties = tttBoard.map((v,i) => v === '' ? i : -1).filter(i => i >= 0);
+        playTTT(empties[Math.floor(Math.random() * empties.length)]);
+      }
+
+      function checkTTTWinner() {
+        const lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+        for (const [a,b,c] of lines) {
+          if (tttBoard[a] && tttBoard[a] === tttBoard[b] && tttBoard[b] === tttBoard[c])
+            return tttBoard[a];
+        }
+        return null;
+      }
+
+      resetTTT();
+
+      // ========== MEMORY GAME ==========
+      const EMOJIS = ['🎮','🚀','🔥','💎','🎯','🌟','🎲','🧩'];
+      let memoryCards, flipped, matched, memoryMoves, memoryLocked;
+
+      function resetMemory() {
+        const pairs = [...EMOJIS, ...EMOJIS];
+        memoryCards = pairs.sort(() => Math.random() - 0.5);
+        flipped = [];
+        matched = new Set();
+        memoryMoves = 0;
+        memoryLocked = false;
+        document.getElementById('memory-score').textContent = 'Moves: 0';
+        renderMemory();
+      }
+
+      function renderMemory() {
+        const board = document.getElementById('memory-board');
+        board.innerHTML = '';
+        memoryCards.forEach((emoji, i) => {
+          const card = document.createElement('div');
+          const isFlipped = flipped.includes(i) || matched.has(i);
+          card.className = 'memory-card' +
+            (flipped.includes(i) ? ' flipped' : '') +
+            (matched.has(i) ? ' matched' : '');
+          card.textContent = isFlipped ? emoji : '?';
+          card.onclick = () => flipCard(i);
+          board.appendChild(card);
+        });
+      }
+
+      function flipCard(i) {
+        if (memoryLocked || flipped.includes(i) || matched.has(i)) return;
+        flipped.push(i);
+        renderMemory();
+
+        if (flipped.length === 2) {
+          memoryMoves++;
+          document.getElementById('memory-score').textContent = 'Moves: ' + memoryMoves;
+          memoryLocked = true;
+          const [a, b] = flipped;
+          if (memoryCards[a] === memoryCards[b]) {
+            matched.add(a);
+            matched.add(b);
+            flipped = [];
+            memoryLocked = false;
+            renderMemory();
+            if (matched.size === memoryCards.length) {
+              document.getElementById('memory-score').textContent =
+                'You won in ' + memoryMoves + ' moves!';
+            }
+          } else {
+            setTimeout(() => {
+              flipped = [];
+              memoryLocked = false;
+              renderMemory();
+            }, 800);
+          }
+        }
+      }
+
+      resetMemory();
+    </script>
   </body>
 </html>

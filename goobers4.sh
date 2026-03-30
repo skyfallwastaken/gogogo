@@ -1,10 +1,11 @@
 #!/bin/bash
 
-DB="postgres"
-TABLE="heartbeats"
-MWM=4        # parallel workers per index build
-MEM="6GB"    # maintenance_work_mem per session (4 parallel * 6GB = 24GB per batch)
-BATCH=16      # concurrent index jobs at a time (4 * 4 workers = 16 cores, leaves headroom)
+DB="mydb"
+
+# Conservative but fast (won’t crash Postgres)
+BATCH=4          # how many indexes at once
+MWM=2            # parallel workers per index
+MEM="2GB"        # maintenance_work_mem per session
 
 INDEXES=(
   index_heartbeats_on_user_id_with_ip
@@ -37,14 +38,15 @@ reindex_one() {
   psql -d "$DB" \
     -c "SET maintenance_work_mem = '$MEM'" \
     -c "SET max_parallel_maintenance_workers = $MWM" \
-    -c "SET max_parallel_workers = 20" \
+    -c "SET max_parallel_workers = 12" \
+    -c "SET synchronous_commit = off" \
     -c "REINDEX INDEX $idx"
 
   echo "[$(date +%T)] Done:     $idx"
 }
 
 export -f reindex_one
-export DB MWM MEM
+export DB MEM MWM
 
-# Run in batches of $BATCH using GNU parallel or xargs
-printf '%s\n' "${INDEXES[@]}" | xargs -P 4 -I{} bash -c 'reindex_one "$@"' _ {}
+# 🔑 THIS LINE CONTROLS EVERYTHING
+printf '%s\n' "${INDEXES[@]}" | xargs -P "$BATCH" -I{} bash -c 'reindex_one "$@"' _ {}

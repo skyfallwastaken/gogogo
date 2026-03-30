@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DB="mydb"
+DB="postgres"
 
 # Conservative but fast (won’t crash Postgres)
 BATCH=4          # how many indexes at once

@@ -33,12 +33,13 @@ INDEXES=(
 reindex_one() {
   local idx=$1
   echo "[$(date +%T)] Starting: $idx"
-  psql -d "$DB" -c "
-    SET maintenance_work_mem = '$MEM';
-    SET max_parallel_maintenance_workers = $MWM;
-    SET max_parallel_workers = 20;
-    REINDEX INDEX CONCURRENTLY $idx;
-  "
+
+  psql -d "$DB" \
+    -c "SET maintenance_work_mem = '$MEM'" \
+    -c "SET max_parallel_maintenance_workers = $MWM" \
+    -c "SET max_parallel_workers = 20" \
+    -c "REINDEX INDEX $idx"
+
   echo "[$(date +%T)] Done:     $idx"
 }
 
